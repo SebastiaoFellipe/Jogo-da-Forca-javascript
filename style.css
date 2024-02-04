@@ -1,0 +1,267 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+:root{
+    --color-white: #fff;
+    --color-light-gray: #c4c4c4;
+    --color-black: #000;
+    --bg-color: #3d3d3d;
+    --btn-color: #2980b9;
+    --btn-hover-color: #297fb9dd;
+    --text-error: #ff0000;
+}
+body{
+    font-family: 'Montserrat', sans-serif;
+    color: var(--color-white);
+    background-color: var(--bg-color);
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+header{
+    display: flex;
+    height: 10vh;
+    justify-content: space-between;
+    align-items: center;
+    width: 60%;
+    margin: 0 auto;
+    position: fixed;
+    top: 0;
+}
+header .fa-question{
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+    transition: 0.2s;
+}
+header .fa-question:hover{
+    animation: shake 0.4s both ease-in-out;
+}
+@keyframes shake {
+    0%, 50%, 100% {
+        transform: rotateZ(0deg);
+    }
+    25% {
+        transform: rotateZ(15deg);
+    }
+    75% {
+        transform: rotateZ(-15deg);
+    }
+}
+.game-content{
+    background-color: var(--color-white);
+    color: var(--color-black);
+    height: 550px;
+    min-width: 1000px;
+    border-radius: 10px;
+    box-shadow: 0 0 50px rgba(0, 0, 0, 0.4);
+    grid-template-areas: 
+    "hangman categorie categorie categorie"
+    "hangman secret-word secret-word secret-word"
+    "keyboard keyboard keyboard keyboard";
+    grid-template-rows: 100px 300px 150px;
+    display: grid;
+    padding-bottom: 20px;
+}
+.grid-hangman{
+    grid-area: hangman;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    justify-content: center;
+    align-items: center;
+    padding: 0 50px;
+}
+.hangman{
+    width: 150px;
+    height: 300px;
+    border-left: 6px solid var(--bg-color);
+    position: relative;
+    color: var(--color-black);
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.hangman::after{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -1px;
+    height: 100%;
+    width: 50%;
+    border-top: 6px solid var(--bg-color);
+}
+.hangman::before{
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0px;
+    width: 30%;
+    transform: translateX(-50%);
+    border-top: 6px solid var(--bg-color);
+}
+.grid-hangman .tries-box{
+    width: 200px;
+}
+.hangman-invisible{
+    display: none;
+}
+.grid-categorie{
+    grid-area: categorie;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.grid-categorie .current-categorie{
+    font-weight: normal;
+}
+.grid-secret-word{
+    grid-area: secret-word;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 50px;
+}
+.secret-word{
+    display: flex;
+    gap: 5px;
+}
+.secret-word span{
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-bottom: 4px solid var(--bg-color);
+}
+.secret-word span#empty-space{
+    width: 20px;
+    border: none;
+}
+.grid-keyboard{
+    grid-area: keyboard;
+    margin: 0 auto;
+}
+.keyboard-line{
+    text-align: center;
+    margin-bottom: 5px;
+}
+.btn-letter{
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    cursor: pointer;
+    border: none;
+    background-color: var(--bg-color);
+    color: var(--color-white);
+}
+.btn-letter.disabledtLetter{
+    background-color: var(--color-light-gray);
+    cursor: default;
+}
+#overlay{
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: block;
+}
+#modal-categorie{
+    display: block;
+}
+#modal-categorie .categories-list{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    row-gap: 15px;
+    margin: 20px 0;
+}
+#modal-categorie .categories-list span{
+    padding: 5px 10px;
+    background-color: var(--color-light-gray);
+    border-radius: 8px;
+    cursor: pointer;
+}
+#modal-categorie .categories-list input{
+    display: none;
+}
+#modal-categorie .categories-list input:checked ~ span{
+    background-color: var(--btn-color);
+    color: var(--color-white);
+}
+#error-categorie{
+    display: none;
+    color: var(--text-error);
+}
+#modal-rules{
+    display: none;
+}
+#modal-rules p{
+    margin-bottom: 10px;
+}
+#modal-message{
+    display: none;
+    text-align: center;
+}
+#modal-message .fa-xmark{
+    font-size: 1.5rem;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+#modal-message #message-img{
+    width: 160px;
+}
+#modal-message #message-title{
+    margin: 10px 0 50px 0;
+    line-height: 2rem;
+}
+.modal{
+    background-color: var(--color-white);
+    color: var(--color-black);
+    height: auto;
+    width: 500px;
+    border-radius: 10px;
+    display: block;
+    padding: 40px;
+    line-height: 1.4rem;
+    text-align: justify;
+    position: absolute;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+.modal > h2{
+    font-weight: normal;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.modal .fa-xmark{
+    padding: 5px;
+    cursor: pointer;
+}
+#modal .btn{
+    border: 0;
+    padding: 10px 20px;
+    background-color: var(--btn-color);
+    border-radius: 10px;
+    cursor: pointer;
+    color: var(--color-white);
+    font-size: 1.2rem;
+    margin-top: 10px;
+}
+#modal .btn:hover {
+    background-color: var(--btn-hover-color);
+}
+footer{
+    position: absolute;
+    bottom: 20px;
+}

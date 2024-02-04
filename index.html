@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo da Forca</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/b15cfa2d08.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header>
+        <span></span>
+        <h1>Jogo da Forca</h1>
+        <i onclick="openRules()"  class="fa-solid fa-question"></i>
+    </header>
+    <section class="game-content">
+        <div class="grid-hangman">
+            <div class="hangman" id="hangman">
+                <svg width="200" height="300" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="95" y="0" width="6" height="40" fill="#3d3d3d" />
+                    <circle id="head" class="hangman-invisible" cx="100" cy="50" r="30" fill="black" />
+                    <rect id="body" class="hangman-invisible" x="95" y="70" width="10" height="100" fill="black" />
+                    <line id="left-arm" class="hangman-invisible" x1="100" y1="100" x2="65" y2="140" stroke="black" stroke-width="8" />
+                    <line id="right-arm" class="hangman-invisible" x1="100" y1="100" x2="135" y2="140" stroke="black" stroke-width="8" />
+                    <line id="left-leg" class="hangman-invisible" x1="100" y1="160" x2="80" y2="230" stroke="black" stroke-width="8" />
+                    <line id="right-leg" class="hangman-invisible" x1="100" y1="160" x2="120" y2="230" stroke="black" stroke-width="8" />
+                </svg>
+            </div>
+            <div class="tries-box">Tentativas restantes: <span id="tries-text"></span></div>
+        </div>
+        <div class="grid-categorie">
+            <h2 class="current-categorie">Categoria: <span id="categorie-text"></span></h2>
+        </div>
+        <div class="grid-secret-word">
+            <div class="secret-word" id="secret-word"></div>
+        </div>
+        <div class="grid-keyboard">
+            <div class="keyboard-line">
+                <button value="Q" class="btn-letter">Q</button>
+                <button value="W" class="btn-letter">W</button>
+                <button value="E" class="btn-letter">E</button>
+                <button value="R" class="btn-letter">R</button>
+                <button value="T" class="btn-letter">T</button>
+                <button value="Y" class="btn-letter">Y</button>
+                <button value="U" class="btn-letter">U</button>
+                <button value="I" class="btn-letter">I</button>
+                <button value="O" class="btn-letter">O</button>
+                <button value="P" class="btn-letter">P</button>
+            </div>
+            <div class="keyboard-line">
+                <button value="A" class="btn-letter">A</button>
+                <button value="S" class="btn-letter">S</button>
+                <button value="D" class="btn-letter">D</button>
+                <button value="F" class="btn-letter">F</button>
+                <button value="G" class="btn-letter">G</button>
+                <button value="H" class="btn-letter">H</button>
+                <button value="J" class="btn-letter">J</button>
+                <button value="K" class="btn-letter">K</button>
+                <button value="L" class="btn-letter">L</button>
+            </div>
+            <div class="keyboard-line">
+                <button value="Z" class="btn-letter">Z</button>
+                <button value="X" class="btn-letter">X</button>
+                <button value="C" class="btn-letter">C</button>
+                <button value="V" class="btn-letter">V</button>
+                <button value="B" class="btn-letter">B</button>
+                <button value="N" class="btn-letter">N</button>
+                <button value="M" class="btn-letter">M</button>
+            </div>
+        </div>
+    </section>
+    <footer>
+        <p>&copy; Sebastião Fellipe</p>
+    </footer>
+    <div id="overlay" onclick="closeModal()"></div>
+    <div id="modal">
+        <div id="modal-rules" class="modal">
+            <h2>Regras:<i onclick="closeModal()" class="fa-solid fa-xmark"></i></h2>
+            <p>Você terá um total de 6 tentativas para adivinhar a palavra secreta que será representada por traços, e a tarefa é descobrir as letras corretas até revelar a palavra.</p>
+            <p>Ao selecionar uma letra, ela será mostrada na tela caso exista na palavra e não poderá ser selecionada novamente.</p>
+            <p>O jogo termina quando você vence encontrando a palavra correta ou perde por exceder o limite de 6 tentativas. Boa sorte!</p>
+        </div>
+        <div id="modal-categorie" class="modal">
+            <h2>Escolha uma categoria:</h2>
+            <ul class="categories-list">
+                <label>
+                    <input type="radio" name="categorie" value="Animais">
+                    <span>Animais</span>
+                </label>
+                <label>
+                    <input type="radio" name="categorie" value="Comidas">
+                    <span>Comidas</span>
+                </label>
+                <label>
+                    <input type="radio" name="categorie" value="Capitais do Brasil">
+                    <span>Capitais do Brasil</span>
+                </label>
+                <label>
+                    <input type="radio" name="categorie" value="Todas">
+                    <span>Todas as Categorias</span>
+                </label>
+            </ul>
+            <span id="error-categorie">Selecione uma categoria</span>
+            <div style="text-align: center;">
+                <button onclick="play()" class="btn" id="btn-start">Jogar</button>
+            </div>
+        </div>
+        <div id="modal-message" class="modal">
+            <img id="message-img" src="" alt="Troféu">
+            <h1 id="message-title"></h1>
+            <button onclick="playAgain()" class="btn" id="btn-play-again">Jogar novamente</button>
+        </div>
+    </div>
+</body>
+</html>
