@@ -243,7 +243,7 @@ const categorieTextHTML = document.getElementById("categorie-text")
 const triesTextHTML = document.getElementById("tries-text")
 const secretWordHTML = document.getElementById("secret-word")
 const head = document.querySelector("#hangman #head")
-const body = document.querySelector("#hangman #body")
+const hangmanBody = document.querySelector("#hangman #body")
 const leftArm = document.querySelector("#hangman #left-arm")
 const rightArm = document.querySelector("#hangman #right-arm")
 const leftLeg = document.querySelector("#hangman #left-leg")
@@ -253,6 +253,9 @@ const overlay = document.querySelector("#overlay")
 const modalRules = document.querySelector("#modal-rules")
 const modalCategorie = document.querySelector("#modal-categorie")
 const modalMessage = document.querySelector("#modal-message")
+const messageImg = document.getElementById("message-img")
+const messageTitle = document.getElementById("message-title")
+const messageSecretWord = document.querySelector("#message-secret-word")
 
 // função para verificar se o usuário escolheu uma categoria
 function verifyCategorie() {
@@ -279,7 +282,7 @@ function chooseSecretWord(categorie) {
     }
 }
 // função para mostrar os tracinhos de palavra secreta
-function showSecretWord(secretWord){
+function showSecretWord(secretWord) {
     secretWordHTML.innerHTML = ""
     for (let i = 0; i < secretWord.length; i++) {
         if (secretWord[i] == ' ') {
@@ -292,39 +295,38 @@ function showSecretWord(secretWord){
     }
 }
 // função para escrever a palavra secreta na tela quando uma letra for clicada
-function writeSecretWord(secretWord, userSecretWord){
-    let word = removeSpecialCharacters(secretWord)
-    let spanSecretWordHTML =  document.querySelectorAll("#secret-word span")
+function writeSecretWord(modifiedSecretword, secretWord, userSecretWord) {
+    let spanSecretWordHTML = document.querySelectorAll("#secret-word span")
     for (let i = 0; i < secretWord.length; i++) {
         for (let j = 0; j < usedLetters.length; j++) {
-            if (word[i] == usedLetters[j]) {
+            if (modifiedSecretword[i] == usedLetters[j]) {
                 spanSecretWordHTML[i].innerHTML = secretWord[i]
                 userSecretWord[i] = secretWord[i]
             }
-        }  
+        }
     }
 }
 // função para remover os acentos das palavras para facilitar a comparação
 function removeSpecialCharacters(word) {
     let str = word.join() // transforma em string separada por virgula
-    let wordStr = str.normalize('NFD').replace(/[\u0300-\u036f]/g,'') // remove os caracteres especiais
+    let wordStr = str.normalize('NFD').replace(/[\u0300-\u036f]/g, '') // remove os caracteres especiais que estão entre u0300 até o u036f na lista unicode
     return wordStr.split(',') // retorna a string transformada em array com base no delimitador
 }
 
 // função para verificar o numero de tentativas e desenhar a pessoa na tela
-function verifyTries(){
+function verifyTries() {
     switch (tries) {
         case 5:
             head.classList.remove('hangman-invisible')
             break;
         case 4:
-            body.classList.remove('hangman-invisible')
+            hangmanBody.classList.remove('hangman-invisible')
             break;
         case 3:
-            leftArm.classList.remove('hangman-invisible') 
+            leftArm.classList.remove('hangman-invisible')
             break;
         case 2:
-            rightArm.classList.remove('hangman-invisible') 
+            rightArm.classList.remove('hangman-invisible')
             break;
         case 1:
             leftLeg.classList.remove('hangman-invisible')
@@ -339,26 +341,30 @@ function verifyTries(){
 // função para comparar os valores de arrays
 function compareArrays(secretWord, userSecretWord) {
     for (let i = 0; i < secretWord.length; i++) {
-      if (secretWord[i] !== userSecretWord[i]) {
-        return false;
-      }
+        if (secretWord[i] !== userSecretWord[i]) {
+            return false;
+        }
     }
     return true;
 }
 // função para verificar se o usuario ganhou ou perdeu
-function verifyGame(secretWord, userSecretWord){
-    let messageImg = document.getElementById("message-img")
-    let messageTitle = document.getElementById("message-title")
-    if (tries==0) {
+function verifyGame(secretWord, userSecretWord) {
+    if (tries == 0) {
         gameStatus = false
         messageImg.src = "img/sad_emoji.png"
-        messageTitle.innerHTML = "Tude bem, o importante é não desistir!"
-        openMessage()
-    } else if(compareArrays(secretWord, userSecretWord)) {
+        messageTitle.innerHTML = "O importante é não desistir!"
+        messageSecretWord.innerHTML = "A palavre era: "+secretWord.join('').toLowerCase()
+        setTimeout(() => {
+            openMessage()
+        }, 200);
+    } else if (compareArrays(secretWord, userSecretWord)) {
         gameStatus = false
         messageImg.src = 'img/trophy.jpg'
         messageTitle.innerHTML = 'Parabéns, você ganhou!'
-        openMessage()
+        messageSecretWord.innerHTML = ""
+        setTimeout(() => {
+            openMessage()
+        }, 200);
     }
 }
 
@@ -398,13 +404,14 @@ function play() {
         gameStatus = true
         closeModal()
         secretWord = chooseSecretWord(categorie) // secretWord recebe um array da palavra escolhida aleatoriamente
+        console.log(secretWord)
         let userSecretWord = Array(secretWord.length)
         // prepara a palavra que o usuario vai digitar para comparar com a palavra secreta colocando espaços vazios e hifens
         for (let i = 0; i < userSecretWord.length; i++) {
-            if (secretWord[i]==' ') {
-                userSecretWord[i]=' '
-            } else if(secretWord[i]=='-') {
-                userSecretWord[i]='-'
+            if (secretWord[i] == ' ') {
+                userSecretWord[i] = ' '
+            } else if (secretWord[i] == '-') {
+                userSecretWord[i] = '-'
             }
         }
         // mostra na tela a categoria escolhida e 6 tentativas iniciais
@@ -414,13 +421,15 @@ function play() {
         showSecretWord(secretWord)
         for (const letter of keyboardLetters) {
             letter.addEventListener("click", function () {
-                if(!usedLetters.includes(letter.value)){
+                if (!usedLetters.includes(letter.value)) {
                     usedLetters.push(letter.value) // adiciona as letras clicadas a um array de letras usadas
                 }
                 letter.classList.add('disabledtLetter')
                 letter.disabled = true
-                if(secretWord.includes(letter.value)){
-                    writeSecretWord(secretWord, userSecretWord)
+                // remove os acentos da palavra secreta para verificar se a letra está inclusa na palavra
+                let modifiedSecretword = removeSpecialCharacters(secretWord)
+                if (modifiedSecretword.includes(letter.value)) {
+                    writeSecretWord(modifiedSecretword, secretWord, userSecretWord)
                 } else {
                     triesTextHTML.innerHTML = --tries
                     verifyTries()
@@ -433,3 +442,14 @@ function play() {
 function playAgain() {
     location.reload()
 }
+
+function checkScreenWidth() {
+    let windowInfoMassage = document.getElementById("windowInfoMessage")
+    if (window.innerWidth < 900) {
+        windowInfoMassage.style.display = "block"
+    } else {
+        windowInfoMassage.style.display = "none"
+    }
+}
+checkScreenWidth();
+window.addEventListener("resize", checkScreenWidth);

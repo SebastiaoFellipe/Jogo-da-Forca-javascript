@@ -30,7 +30,7 @@
                     <line id="right-leg" class="hangman-invisible" x1="100" y1="160" x2="120" y2="230" stroke="black" stroke-width="8" />
                 </svg>
             </div>
-            <div class="tries-box">Tentativas restantes: <span id="tries-text"></span></div>
+        <div class="tries-box">Tentativas restantes: <span id="tries-text"></span></div>    
         </div>
         <div class="grid-categorie">
             <h2 class="current-categorie">Categoria: <span id="categorie-text"></span></h2>
@@ -112,8 +112,15 @@
         <div id="modal-message" class="modal">
             <img id="message-img" src="" alt="Troféu">
             <h1 id="message-title"></h1>
+            <div id="message-secret-word"></div>
             <button onclick="playAgain()" class="btn" id="btn-play-again">Jogar novamente</button>
         </div>
+    </div>
+    <div id="windowInfoMessage">
+        <i class="fa-solid fa-triangle-exclamation"></i>
+        <p><strong>Atenção:</strong> Esta página não foi projetada para telas com largura inferior a 900 pixels.</p>
+        <p>Recomendamos o uso de um dispositivo com uma tela maior para uma melhor experiência.</p>
+        <p>Lamentamos qualquer inconveniente que isso possa causar.</p>
     </div>
 </body>
 </html>
